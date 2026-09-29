@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ePoster Studio">
+  <meta name="theme-color" content="#8b0000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>ePoster Studio</title>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- SECURE DEVELOPER CONTROL PANEL MODAL -->
+  <div class="dev-modal" id="devModal">
+    <div class="dev-content">
+      <h3>⚙️ Secure Developer Panel</h3>
+      <div class="dev-group">
+        <label>Campaign Title Line 1</label>
+        <input type="text" id="devTitle1" value="WORLD AIDS">
+      </div>
+      <div class="dev-group">
+        <label>Campaign Title Line 2 & Year</label>
+        <input type="text" id="devTitle2" value="DAY 2026">
+      </div>
+      <div class="dev-group">
+        <label>Campaign Date Subtext</label>
+        <input type="text" id="devDateText" value="1 DECEMBER">
+      </div>
+      <div class="dev-group">
+        <label>Hashtag 1 & 2 (comma separated)</label>
+        <input type="text" id="devHashtags" value="#WorldAIDSDay, #KnowYourStatus">
+      </div>
+      <div class="dev-group">
+        <label>Slogans List (one per line)</label>
+        <textarea id="devSlogans">RETHINK. REBUILD. RISE.
+KNOW YOUR STATUS. GET TESTED.
+END STIGMA, SUPPORT LIVES.
+COMMUNITY LEADERSHIP MATTERS.</textarea>
+      </div>
+      <div class="dev-group">
+        <label>Upload Custom Backdrop Image</label>
+        <input type="file" id="devBackdropInput" accept="image/*">
+      </div>
+      <div class="dev-btn-row">
+        <button class="dev-save-btn" id="devSaveBtn">Save & Apply</button>
+        <button class="dev-lock-btn" id="devLockBtn">Lock Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESKTOP ACCESS BLOCKER -->
+  <div class="desktop-blocker" id="desktopBlocker">
+    <div class="blocker-icon-badge">
+      <img src="img/mascot_tr.png" alt="Mascot Icon" crossorigin="anonymous">
+    </div>
+    <h2>Mobile Device Required</h2>
+    <p>The ePoster Studio is optimized exclusively for mobile phones and tablets.</p>
+  </div>
+
+  <div class="app" id="app">
+    <div class="scroll-area" id="scrollArea">
+
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="img/mascot_tr.png" alt="Mascot Icon" crossorigin="anonymous">
+          </div>
+          <div class="brand-text">
+            <h1>ePoster Studio</h1>
+            <div class="sub">Shaviyani Atoll Hospital</div>
+          </div>
+        </div>
+        <button class="header-icon-btn" id="headerRefreshBtn" type="button" title="Refresh Studio">🔄</button>
+      </header>
+
+      <!-- MODE SWITCH -->
+      <div class="mode-tabs" id="modeTabs">
+        <button class="tab-btn active" id="modeImageBtn">📷 Photo Story</button>
+        <button class="tab-btn" id="modeVideoBtn">🎥 10s Story Video ⚡</button>
+      </div>
+
+      <!-- CANVAS FRAME -->
+      <div class="canvas-frame" id="canvasFrame">
+        <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+        <canvas id="creatorCanvas" width="1200" height="630"></canvas>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="upload-section">
+        <div class="upload-label-row">
+          <span class="label-text">Add your media</span>
+          <span class="media-type-badge" id="mediaTypeBadge">Photo</span>
+        </div>
+        <div class="upload-actions">
+          <button class="upload-action-btn" id="cameraBtn" type="button">
+            <span class="icon-circle">📸</span>
+            <span id="cameraBtnText">Take Photo</span>
+          </button>
+          <button class="upload-action-btn" id="galleryBtn" type="button">
+            <span class="icon-circle">🖼️</span>
+            <span id="galleryBtnText">Choose Photo</span>
+          </button>
+        </div>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- ZOOM & MUTE -->
+      <div class="zoom-mute-row">
+        <div class="field-group">
+          <div class="field-label">
+            <span>Zoom & drag inside media</span>
+            <span class="value-badge" id="zoomValue">1.0×</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" id="zoomRange" min="0.5" max="3.0" step="0.05" value="1">
+          </div>
+        </div>
+        <button class="mute-toggle-btn" id="muteToggleBtn" type="button">🔊 Mute</button>
+      </div>
+
+      <!-- STATUS -->
+      <div class="video-status" id="videoStatus">
+        <span class="spinner" id="statusSpinner"></span>
+        <span id="statusText"></span>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="action-row">
+        <button class="btn btn-shuffle" id="shuffleSloganBtn" type="button">🔀 Shuffle Slogan</button>
+        <button class="btn btn-share" id="actionShareBtn">📤 Share Story</button>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="app-footer"><small>Developed by: Ahmed Shareef · Shaviyani Atoll Hospital</small></div>
+
+    </div>
+  </div>
+
+  <!-- Modular Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

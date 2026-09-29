@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ePoster Studio">
+  <meta name="theme-color" content="#d90429">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>WHD 2026 · ePoster Studio</title>
+
+  <!-- UNIVERSAL @FONT-FACE EMBEDDING -->
+  <style>
+    @font-face {
+      font-family: 'AppSans';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/outfit:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 400 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'SloganFont';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/outfit:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 400 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'HashtagFont';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/montserrat:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 700 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'CustomHandwritten';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/caveat@latest/latin-700-normal.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { height: 100%; width: 100%; overflow: hidden; touch-action: manipulation; background: #ffffff; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'AppSans', -apple-system, BlinkMacSystemFont, sans-serif;
+      height: 100%; width: 100%; overflow: hidden; position: fixed; inset: 0;
+      display: flex; flex-direction: column; color: #1a1a1a;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      overscroll-behavior: none; -webkit-overflow-scrolling: touch; background: #ffffff;
+    }
+    
+    /* DESKTOP BLOCKER OVERLAY */
+    .desktop-blocker {
+      position: fixed; inset: 0; background: #8a0018; z-index: 99999;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px; text-align: center; color: #ffffff;
+    }
+    .desktop-blocker.active { display: flex; }
+    .desktop-blocker h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+    .desktop-blocker p { font-size: 0.92rem; opacity: 0.9; max-width: 380px; line-height: 1.5; }
+
+    /* CAMPAIGN EXPIRED SCREEN OVERLAY */
+    .expired-blocker {
+      position: fixed; inset: 0; background: #6e0014; z-index: 99999;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px; text-align: center; color: #ffffff;
+    }
+    .expired-blocker.active { display: flex; }
+    .expired-blocker h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+    .expired-blocker p { font-size: 0.92rem; opacity: 0.9; max-width: 380px; line-height: 1.5; }
+
+    /* WHITISH BADGE ICON CONTAINER */
+    .blocker-icon-badge {
+      width: 82px; height: 82px; background: #ffffff;
+      border: 1.5px solid rgba(217, 4, 41, 0.2); border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); padding: 12px;
+    }
+    .blocker-icon-badge img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); }
+
+    .app {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; overflow: hidden;
+      background: linear-gradient(180deg, #fff8f9 0%, #ffffff 40%, #ffffff 100%);
+      z-index: 1;
+    }
+    .scroll-area {
+      flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+      padding: 6px 14px 24px; display: flex; flex-direction: column; gap: 10px;
+      overscroll-behavior: contain; background: transparent; scrollbar-width: none;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* HEADER WITH RIGHT-ALIGNED REFRESH BUTTON */
+    .app-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; flex-shrink: 0; min-height: 44px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 10px; background: transparent;
+      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; flex-shrink: 0;
+    }
+    .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+    .brand-text h1 { font-size: 1.05rem; font-weight: 900; letter-spacing: -0.02em; color: #7a0010; line-height: 1.1; }
+    .brand-text .sub { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #d90429; margin-top: 1px; }
+
+    .header-refresh-btn {
+      background: #fff0f3; border: 1.5px solid rgba(255, 45, 85, 0.25);
+      width: 38px; height: 38px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: #d90429;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      box-shadow: 0 2px 6px rgba(217, 4, 41, 0.06);
+    }
+    .header-refresh-btn:active { transform: scale(0.92); background: #ffe3e8; }
+
+    /* MODE TABS */
+    .mode-tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      background: #f0e6e8; padding: 5px; border-radius: 15px;
+      border: 1.5px solid rgba(217, 4, 41, 0.15); flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(217, 4, 41, 0.05);
+    }
+    .tab-btn {
+      background: #ffffff; border: 1.5px solid rgba(0, 0, 0, 0.06); padding: 13px 10px;
+      font-size: 0.98rem; font-weight: 900; color: #7a0010; border-radius: 12px;
+      cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      font-family: inherit; letter-spacing: 0.02em; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+    .tab-btn#modeVideoBtn {
+      background: linear-gradient(135deg, #fff0f3, #ffe3e8);
+      border-color: rgba(255, 45, 85, 0.35); color: #b3001b;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff2d55, #d90429) !important; color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 6px 16px rgba(255, 45, 85, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transform: scale(1.02);
+    }
+    .tab-btn:active { transform: scale(0.97); }
+
+    /* CANVAS FRAME & VIDEO PREVIEW CONTAINER */
+    .canvas-frame {
+      position: relative; width: 100%; aspect-ratio: 3 / 4;
+      border-radius: 20px; overflow: hidden; flex-shrink: 0;
+      background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 28px rgba(217, 4, 41, 0.1), 0 2px 5px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      padding: 5px; box-sizing: border-box; max-height: 54vh; margin: 0 auto;
+    }
+    .canvas-frame .hearts-layer {
+      position: absolute; inset: 5px; border-radius: 15px; overflow: hidden; pointer-events: none; z-index: 1;
+    }
+    .canvas-frame .hearts-layer .heart {
+      position: absolute; top: -30px; font-size: 14px; opacity: 0;
+      animation: heartFall linear infinite; will-change: transform, opacity;
+      filter: drop-shadow(0 0 3px rgba(255, 100, 130, 0.5));
+    }
+    @keyframes heartFall {
+      0% { transform: translateY(-30px) translateX(0) rotate(0deg) scale(0.6); opacity: 0; }
+      12% { opacity: 0.9; } 50% { opacity: 0.7; } 88% { opacity: 0.35; }
+      100% { transform: translateY(110%) translateX(var(--drift, 24px)) rotate(340deg) scale(1); opacity: 0; }
+    }
+    .canvas-frame canvas {
+      position: relative; z-index: 2; width: 100%; height: 100%;
+      display: block; border-radius: 15px; touch-action: none;
+    }
+
+    /* UPLOAD */
+    .upload-section { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .upload-label-row { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+    .upload-label-row .label-text { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #7a0010; }
+    .upload-label-row .media-type-badge {
+      font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+      color: #d90429; background: rgba(255, 45, 85, 0.08); border: 1px solid rgba(255, 45, 85, 0.2);
+      padding: 3px 10px; border-radius: 7px;
+    }
+    .upload-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .upload-action-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 14px; border-radius: 14px;
+      border: 1.5px solid rgba(255, 45, 85, 0.25); background: #ffffff; color: #7a0010; font-weight: 900; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.2s; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      font-family: inherit; text-align: center; letter-spacing: 0.01em; position: relative; overflow: hidden;
+      box-shadow: 0 3px 10px rgba(217, 4, 41, 0.06);
+    }
+    .upload-action-btn .icon-circle {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 45, 85, 0.12), rgba(217, 4, 41, 0.08));
+      border: 1px solid rgba(255, 45, 85, 0.2); display: flex; align-items: center; justify-content: center;
+      font-size: 15px; transition: transform 0.2s; flex-shrink: 0;
+    }
+    .upload-action-btn:active { transform: scale(0.97); background: #fff5f7; border-color: rgba(255, 45, 85, 0.4); }
+    .upload-action-btn:active .icon-circle { transform: scale(1.1); }
+    .upload-action-btn input[type="file"] { display: none; }
+
+    /* ZOOM FIELD & MUTE CONTROL INLINE ROW */
+    .zoom-mute-row {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .field-label {
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #7a0010; padding: 0 4px; -webkit-user-select: none; user-select: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .field-label .value-badge {
+      font-size: 0.78rem; font-weight: 800; color: #d90429;
+      background: rgba(255, 45, 85, 0.08); padding: 3px 9px; border-radius: 6px;
+      letter-spacing: 0.02em; border: 1px solid rgba(255, 45, 85, 0.15);
+    }
+    .range-wrapper { width: 100%; padding: 0 2px; }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+      background: #f0e0e5; border-radius: 5px; outline: none; margin: 4px 0; touch-action: manipulation; cursor: pointer; border: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff2d55, #b3001b); cursor: pointer;
+      box-shadow: 0 3px 10px rgba(255, 45, 85, 0.35), 0 0 0 2px rgba(255, 45, 85, 0.1);
+      border: 2px solid #ffffff; transition: transform 0.12s; touch-action: manipulation;
+    }
+    input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.18); }
+    input[type="range"]::-moz-range-thumb {
+      width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #ff2d55, #b3001b);
+      cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 3px 10px rgba(255, 45, 85, 0.35);
+    }
+
+    /* MUTE CONTROL BUTTON (INLINE NEXT TO ZOOM) */
+    .mute-toggle-btn {
+      background: #ffffff; border: 1.5px solid rgba(255, 45, 85, 0.3);
+      padding: 0 14px; height: 42px; border-radius: 12px; font-size: 0.88rem; font-weight: 800;
+      color: #d90429; cursor: pointer; transition: all 0.2s; font-family: inherit; flex-shrink: 0;
+      display: none; align-items: center; justify-content: center; gap: 6px; margin-top: 18px;
+      box-shadow: 0 2px 6px rgba(217, 4, 41, 0.05);
+    }
+    .mute-toggle-btn.visible { display: flex; animation: fadeIn 0.3s ease both; }
+    .mute-toggle-btn.muted { background: #d90429; color: #ffffff; border-color: #d90429; }
+    .mute-toggle-btn:active { transform: scale(0.95); }
+
+    /* BUTTONS */
+    .btn {
+      padding: 15px 14px; border-radius: 14px; border: none;
+      font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      -webkit-appearance: none; appearance: none; color: #ffffff; flex-shrink: 0; font-family: inherit;
+      letter-spacing: 0.01em; position: relative; overflow: hidden; text-align: center;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 55%);
+      pointer-events: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-shuffle {
+      background: linear-gradient(135deg, #ff758c, #ff416c);
+      box-shadow: 0 6px 16px rgba(255, 65, 108, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      flex: 1;
+    }
+    .btn-share {
+      background: linear-gradient(135deg, #ff2d55, #b3001b);
+      box-shadow: 0 6px 16px rgba(255, 45, 85, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      flex: 1;
+    }
+    .btn-share:disabled {
+      opacity: 0.75; cursor: not-allowed; filter: grayscale(0.2);
+    }
+    .action-row {
+      display: flex; gap: 10px; width: 100%; flex-shrink: 0;
+    }
+
+    /* DYNAMIC LOADING SPINNER STATUS BOX (HIDDEN BY DEFAULT) */
+    .video-status {
+      font-size: 0.92rem; font-weight: 800; color: #b3001b; text-align: center;
+      background: #fff5f7; padding: 12px 14px; border-radius: 12px;
+      display: none; border: 1.5px solid rgba(255, 45, 85, 0.25); flex-shrink: 0;
+      line-height: 1.4; letter-spacing: 0.01em; box-shadow: 0 3px 8px rgba(255, 45, 85, 0.06);
+      align-items: center; justify-content: center; gap: 10px;
+    }
+    .video-status.visible { display: flex; animation: fadeIn 0.3s ease both; }
+
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid rgba(255, 45, 85, 0.2);
+      border-top-color: #d90429; border-radius: 50%;
+      animation: spin 0.8s linear infinite; flex-shrink: 0; display: none;
+    }
+    .spinner.active { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .app-footer {
+      text-align: center; font-size: 0.72rem; color: #8a6a70;
+      font-weight: 700; padding: 6px 0 2px; flex-shrink: 0; letter-spacing: 0.04em;
+    }
+    .app-footer a { color: #d90429; text-decoration: none; font-weight: 900; }
+    .app-footer a:hover { text-decoration: underline; }
+
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .scroll-area {
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        padding-top: calc(6px + env(safe-area-inset-top));
+      }
+      .app-header { padding-top: calc(3px + env(safe-area-inset-top)); }
+      .app-footer { padding-bottom: calc(2px + env(safe-area-inset-bottom)); }
+    }
+    .app, .app * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    body { overscroll-behavior-y: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .scroll-area > * { animation: fadeIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1) both; }
+    .scroll-area > *:nth-child(2) { animation-delay: 0.02s; }
+    .scroll-area > *:nth-child(3) { animation-delay: 0.04s; }
+    .scroll-area > *:nth-child(4) { animation-delay: 0.06s; }
+    .scroll-area > *:nth-child(5) { animation-delay: 0.08s; }
+    .scroll-area > *:nth-child(6) { animation-delay: 0.10s; }
+    .scroll-area > *:nth-child(7) { animation-delay: 0.12s; }
+    .scroll-area > *:nth-child(8) { animation-delay: 0.14s; }
+  </style>
+</head>
+<body>
+
+  <!-- DESKTOP ACCESS BLOCKER -->
+  <div class="desktop-blocker" id="desktopBlocker">
+    <div class="blocker-icon-badge">
+      <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot Icon" crossorigin="anonymous">
+    </div>
+    <h2>Mobile Device Required</h2>
+    <p>The World Heart Day 2026 ePoster Studio is optimized exclusively for mobile phones and tablets. Please open this link on your smartphone to create and share your campaign story!</p>
+  </div>
+
+  <!-- CAMPAIGN EXPIRED SCREEN OVERLAY -->
+  <div class="expired-blocker" id="expiredBlocker">
+    <div class="blocker-icon-badge">
+      <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot Icon" crossorigin="anonymous">
+    </div>
+    <h2>Campaign Concluded</h2>
+    <p>The World Heart Day 2026 ePoster Studio official campaign window has ended as of October 3, 2026. Thank you for participating and keeping the beat alive!</p>
+  </div>
+
+  <div class="app" id="app">
+    <div class="scroll-area" id="scrollArea">
+
+      <!-- HEADER WITH RIGHT-ALIGNED REFRESH BUTTON -->
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot Icon" crossorigin="anonymous">
+          </div>
+          <div class="brand-text">
+            <h1>ePoster Studio</h1>
+            <div class="sub">Shaviyani Atoll Hospital</div>
+          </div>
+        </div>
+        <button class="header-refresh-btn" id="headerRefreshBtn" type="button" aria-label="Refresh studio" title="Refresh Studio">
+          🔄
+        </button>
+      </header>
+
+      <!-- MODE SWITCH -->
+      <div class="mode-tabs" id="modeTabs">
+        <button class="tab-btn active" id="modeImageBtn" onclick="switchMode('image')" aria-label="Photo story mode">
+          📷 Photo Story
+        </button>
+        <button class="tab-btn" id="modeVideoBtn" onclick="switchMode('video')" aria-label="10 second story video mode">
+          🎥 10s Story Video ⚡
+        </button>
+      </div>
+
+      <!-- CANVAS FRAME (3:4 Ratio) WITH LIVE RENDER -->
+      <div class="canvas-frame" id="canvasFrame">
+        <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+        <canvas id="creatorCanvas" width="1080" height="1440"></canvas>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="upload-section">
+        <div class="upload-label-row">
+          <span class="label-text">Add your media</span>
+          <span class="media-type-badge" id="mediaTypeBadge">Photo</span>
+        </div>
+        <div class="upload-actions">
+          <button class="upload-action-btn" id="cameraBtn" type="button">
+            <span class="icon-circle">📸</span>
+            <span id="cameraBtnText">Take Photo</span>
+          </button>
+          <button class="upload-action-btn" id="galleryBtn" type="button">
+            <span class="icon-circle">🖼️</span>
+            <span id="galleryBtnText">Choose Photo</span>
+          </button>
+        </div>
+        <!-- iOS-friendly file inputs with 'capture' attributes -->
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- ZOOM SLIDER & MUTE BUTTON IN SAME LINE -->
+      <div class="zoom-mute-row">
+        <div class="field-group">
+          <div class="field-label">
+            <span>Zoom & drag inside media</span>
+            <span class="value-badge" id="zoomValue">1.0×</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" id="zoomRange" min="0.5" max="3.0" step="0.05" value="1">
+          </div>
+        </div>
+        <button class="mute-toggle-btn" id="muteToggleBtn" type="button">🔊 Mute</button>
+      </div>
+
+      <!-- DYNAMIC STATUS & SPINNER (HIDDEN BY DEFAULT) -->
+      <div class="video-status" id="videoStatus">
+        <span class="spinner" id="statusSpinner"></span>
+        <span id="statusText"></span>
+      </div>
+
+      <!-- SHUFFLE & SHARE AS TWO BUTTONS SIDE BY SIDE -->
+      <div class="action-row">
+        <button class="btn btn-shuffle" id="shuffleSloganBtn" type="button">🔀 Shuffle Slogan</button>
+        <button class="btn btn-share" id="actionShareBtn">📤 Share Story</button>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="app-footer"><small>Developed by: Ahmed Shareef · Shaviyani Atoll Hospital</small></div>
+
+    </div>
+  </div>
+
+<script>
+    (function() {
+      "use strict";
+
+      // ============ CAMPAIGN EXPIRY CHECK ============
+      function checkCampaignExpiry() {
+        const expiryDate = new Date('2026-10-04T00:00:00');
+        const now = new Date();
+        if (now > expiryDate) {
+          const expiredBlocker = document.getElementById('expiredBlocker');
+          if (expiredBlocker) expiredBlocker.classList.add('active');
+        }
+      }
+      checkCampaignExpiry();
+
+      // ============ MOBILE-ONLY DEVICE CHECK ============
+      function checkMobileDevice() {
+        const isTouchScreen = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isMobileUA = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+        
+        if (!isMobileUA && !isTouchScreen) {
+          const blocker = document.getElementById('desktopBlocker');
+          if (blocker) blocker.classList.add('active');
+        }
+      }
+      checkMobileDevice();
+
+      // ============ HEART CASCADE ============
+      (function generateHearts() {
+        const layer = document.getElementById('heartsLayer');
+        const heartChars = ['❤', '♥', '❤️', '💗', '💓'];
+        const colors = [
+          'rgba(255, 160, 180, 0.85)', 'rgba(255, 120, 150, 0.8)',
+          'rgba(255, 190, 205, 0.75)', 'rgba(255, 100, 130, 0.7)',
+          'rgba(255, 210, 220, 0.7)'
+        ];
+        for (let i = 0; i < 20; i++) {
+          const heart = document.createElement('span');
+          heart.className = 'heart';
+          heart.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+          const size = 8 + Math.random() * 16;
+          const duration = 8 + Math.random() * 12;
+          const delay = Math.random() * 12;
+          const left = Math.random() * 100;
+          const drift = (Math.random() * 70 - 35).toFixed(0) + 'px';
+          heart.style.left = left + '%';
+          heart.style.fontSize = size + 'px';
+          heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+          heart.style.animationDuration = duration + 's';
+          heart.style.animationDelay = '-' + delay + 's';
+          heart.style.setProperty('--drift', drift);
+          layer.appendChild(heart);
+        }
+      })();
+
+      // ============ DOM REFS ============
+      const canvas = document.getElementById('creatorCanvas');
+      const ctx = canvas.getContext('2d');
+      const zoomRange = document.getElementById('zoomRange');
+      const zoomValue = document.getElementById('zoomValue');
+      const actionShareBtn = document.getElementById('actionShareBtn');
+      const videoStatus = document.getElementById('videoStatus');
+      const statusSpinner = document.getElementById('statusSpinner');
+      const statusText = document.getElementById('statusText');
+      const modeImageBtn = document.getElementById('modeImageBtn');
+      const modeVideoBtn = document.getElementById('modeVideoBtn');
+      const mediaTypeBadge = document.getElementById('mediaTypeBadge');
+      const cameraBtn = document.getElementById('cameraBtn');
+      const galleryBtn = document.getElementById('galleryBtn');
+      const cameraBtnText = document.getElementById('cameraBtnText');
+      const galleryBtnText = document.getElementById('galleryBtnText');
+      const cameraInput = document.getElementById('cameraInput');
+      const galleryInput = document.getElementById('galleryInput');
+      const shuffleSloganBtn = document.getElementById('shuffleSloganBtn');
+      const headerRefreshBtn = document.getElementById('headerRefreshBtn');
+      const muteToggleBtn = document.getElementById('muteToggleBtn');
+
+      headerRefreshBtn.addEventListener('click', () => {
+        window.location.reload();
+      });
+
+      // ============ STATE ============
+      let userImage = null;
+      let userVideo = null;
+      let photoScale = 1;
+      let photoOffsetX = 0;
+      let photoOffsetY = 0;
+      let currentMode = 'image';
+      let animationId = null;
+      let recordingStartTime = 0;
+      let lastRecordedVideoBlob = null;
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let lastDrawTime = 0;
+
+      let initialPinchDist = null;
+      let initialScale = 1;
+
+      // ============ SLOGANS (40 OPTIONS) ============
+      const whdSlogans = [
+        "USE HEART FOR ACTION.",
+        "USE HEART TO CONNECT.",
+        "BEAT CVD, USE HEART.",
+        "POWER YOUR LIFE, USE HEART.",
+        "KNOW RISK, TAKE ACTION.",
+        "EMPOWER YOUR HEART.",
+        "TAKE CHARGE OF YOUR HEART.",
+        "FUEL YOUR LIFE WITH HEART.",
+        "MAKE EVERY BEAT COUNT.",
+        "STEP UP FOR HEART HEALTH.",
+        "PROTECT EVERY HEART.",
+        "HEART HEALTH FOR ALL.",
+        "CARE FOR YOUR HEART TODAY.",
+        "YOUR HEART, YOUR FUTURE.",
+        "HEALTHY HABITS, HEALTHY HEART.",
+        "NURTURE YOUR HEART DAILY.",
+        "PREVENT DISEASE, PROTECT LIFE.",
+        "DEFEND YOUR HEART'S RHYTHM.",
+        "EARLY AWARENESS SAVES LIVES.",
+        "KEEP YOUR HEART STRONG.",
+        "STRONG HEART, STRONG COMMUNITY.",
+        "SHARE THE LOVE, SAVE A HEART.",
+        "UNITED FOR HEART HEALTH.",
+        "COMMUNITY CARE, HEART AWARE.",
+        "PULSE OF LIFE, PROTECT IT TOGETHER.",
+        "CONNECT THROUGH COMPASSION.",
+        "BUILD A HEART-HEALTHY WORLD.",
+        "STAND TOGETHER, BEAT CVD.",
+        "HEARTBEATS CONNECT US ALL.",
+        "SUPPORT A HEALTHY HEART JOURNEY.",
+        "LIVE LIFE WITH HEART.",
+        "SMALL STEPS, BIG HEART.",
+        "CHOOSE HEALTH, BEAT CVD.",
+        "KEEP THE BEAT ALIVE.",
+        "HEARTS ARE FOR LIVING.",
+        "LOVE YOUR HEART UNCONDITIONALLY.",
+        "BEAT THE ODDS, LOVE YOUR HEART.",
+        "LIVE BOLDLY, LOVE DEEPLY.",
+        "YOUR HEART DESERVES THE BEST.",
+        "BEAT WITH PURPOSE."
+      ];
+      let currentSloganIndex = Math.floor(Math.random() * whdSlogans.length);
+
+      shuffleSloganBtn.addEventListener('click', () => {
+        let newIndex;
+        do { newIndex = Math.floor(Math.random() * whdSlogans.length); }
+        while (newIndex === currentSloganIndex && whdSlogans.length > 1);
+        currentSloganIndex = newIndex;
+        scheduleDraw();
+      });
+
+      // ============ ASSETS ============
+      const newLogoImg = new Image();
+      newLogoImg.src = 'https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/shah_whd_logo.png';
+      newLogoImg.crossOrigin = 'anonymous';
+      newLogoImg.onload = () => { scheduleDraw(); };
+
+      // ============ DYNAMIC RANDOM MASCOT FROM GITHUB 'img' FOLDER ============
+      const mascotTrImg = new Image();
+      mascotTrImg.crossOrigin = 'anonymous';
+      mascotTrImg.onload = () => { scheduleDraw(); };
+
+      async function loadRandomMascot() {
+        const owner = "AhmedSharyph";
+        const repo = "whd-2026";
+        const folderPath = "img";
+
+        try {
+          const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folderPath}`);
+          const files = await response.json();
+
+          const imageFiles = files.filter(file => file.type === "file" && /\.(png|jpg|jpeg|webp|svg)$/i.test(file.name));
+
+          if (imageFiles.length > 0) {
+            const randomFile = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+            mascotTrImg.src = randomFile.download_url;
+          } else {
+            mascotTrImg.src = 'https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/img/mascot_tr.png';
+          }
+        } catch (error) {
+          console.warn("Could not fetch image list from GitHub API, using fallback.", error);
+          mascotTrImg.src = 'https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/img/mascot_tr.png';
+        }
+      }
+
+      loadRandomMascot();
+
+      // ============ CURVE CONSTANTS ============
+      const CURVE = {
+        P0: { x: 0,   y: 620 },
+        P1: { x: 360, y: 380 },
+        P2: { x: 720, y: 260 },
+        P3: { x: 1080, y: 400 }
+      };
+
+      function bezierPoint(t) {
+        const mt = 1 - t;
+        const { P0, P1, P2, P3 } = CURVE;
+        return {
+          x: mt*mt*mt*P0.x + 3*mt*mt*t*P1.x + 3*mt*t*t*P2.x + t*t*t*P3.x,
+          y: mt*mt*mt*P0.y + 3*mt*mt*t*P1.y + 3*mt*t*t*P2.y + t*t*t*P3.y
+        };
+      }
+      function bezierTangentAngle(t) {
+        const mt = 1 - t;
+        const { P0, P1, P2, P3 } = CURVE;
+        const dx = 3*mt*mt*(P1.x-P0.x) + 6*mt*t*(P2.x-P1.x) + 3*t*t*(P3.x-P2.x);
+        const dy = 3*mt*mt*(P1.y-P0.y) + 6*mt*t*(P2.y-P1.y) + 3*t*t*(P3.y-P2.y);
+        return Math.atan2(dy, dx);
+      }
+
+      function findTAtDistance(centerT, distancePx) {
+        const centerPt = bezierPoint(centerT);
+        const forward = distancePx >= 0;
+        const absDist = Math.abs(distancePx);
+        const step = 0.001;
+
+        let t = centerT;
+        let accumulated = 0;
+        let prevPt = centerPt;
+
+        for (let i = 0; i < 1000; i++) {
+          t += forward ? step : -step;
+          if (t < 0.001 || t > 0.999) break;
+          const pt = bezierPoint(t);
+          accumulated += Math.hypot(pt.x - prevPt.x, pt.y - prevPt.y);
+          prevPt = pt;
+          if (accumulated >= absDist) break;
+        }
+        return Math.max(0.01, Math.min(0.99, t));
+      }
+
+      const PRIMARY_FONT = 'AppSans';
+      const SLOGAN_FONT = 'SloganFont';
+      const HASHTAG_FONT = 'CustomHandwritten';
+
+      function drawSlantedTextAlongCurve(text, centerT, opts = {}) {
+        const {
+          aboveOffset = 34,
+          fontSize = 54,
+          color = '#ffffff',
+          glow = 'rgba(0, 0, 0, 0.5)'
+        } = opts;
+
+        ctx.save();
+        ctx.font = `700 ${fontSize}px "${HASHTAG_FONT}", cursive, sans-serif`;
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
+
+        const charWidths = [];
+        let totalWidth = 0;
+        for (let i = 0; i < text.length; i++) {
+          const w = ctx.measureText(text[i]).width;
+          charWidths.push(w);
+          totalWidth += w;
+        }
+
+        let currentT = findTAtDistance(centerT, -totalWidth / 2);
+
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          const cWidth = charWidths[i];
+          currentT = findTAtDistance(currentT, cWidth / 2);
+
+          const pt = bezierPoint(currentT);
+          const angle = bezierTangentAngle(currentT);
+          const nx = Math.sin(angle);
+          const ny = -Math.cos(angle);
+
+          ctx.save();
+          ctx.translate(pt.x + nx * aboveOffset, pt.y + ny * aboveOffset);
+          ctx.rotate(angle);
+          ctx.fillText(char, 0, 0);
+          ctx.restore();
+
+          currentT = findTAtDistance(currentT, cWidth / 2);
+        }
+        ctx.restore();
+      }
+
+      function drawBackground(w, h) {
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0.00, '#8a0018');
+        bgGrad.addColorStop(0.15, '#b3001b');
+        bgGrad.addColorStop(0.35, '#d90429');
+        bgGrad.addColorStop(0.55, '#d90429');
+        bgGrad.addColorStop(0.75, '#a80020');
+        bgGrad.addColorStop(1.00, '#6e0014');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        const glow = ctx.createRadialGradient(
+          w * 0.30, h * 0.06, 0,
+          w * 0.30, h * 0.06, w * 0.9
+        );
+        glow.addColorStop(0,    'rgba(255, 120, 150, 0.35)');
+        glow.addColorStop(0.45, 'rgba(255, 45, 85, 0.12)');
+        glow.addColorStop(1,    'rgba(255, 45, 85, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, w, h * 0.5);
+
+        ctx.save();
+        ctx.globalAlpha = 0.06;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        const patternY = 220;
+        const patternStep = 90;
+        for (let row = 0; row < 3; row++) {
+          const yBase = patternY + row * patternStep;
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 6) {
+            const cycle = 180;
+            const local = (x + row * 40) % cycle;
+            let dy = 0;
+            if (local > 20 && local < 40) dy = -6 * Math.sin(((local - 20) / 20) * Math.PI);
+            else if (local >= 50 && local < 58) dy = 6;
+            else if (local >= 58 && local < 68) dy = -32 * Math.sin(((local - 58) / 10) * Math.PI);
+            else if (local >= 68 && local < 76) dy = 10 * Math.sin(((local - 68) / 8) * Math.PI);
+            else if (local >= 90 && local < 120) dy = -5 * Math.sin(((local - 90) / 30) * Math.PI);
+            const y = yBase + dy;
+            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        const bottomGrad = ctx.createLinearGradient(0, h - 140, 0, h);
+        bottomGrad.addColorStop(0, '#b3001b');
+        bottomGrad.addColorStop(0.5, '#8a0018');
+        bottomGrad.addColorStop(1, '#5a0010');
+        ctx.fillStyle = bottomGrad;
+        ctx.fillRect(0, h - 140, w, 140);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, h - 140);
+        ctx.lineTo(w, h - 140);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      let drawScheduled = false;
+      function scheduleDraw() {
+        if (drawScheduled) return;
+        drawScheduled = true;
+        requestAnimationFrame(() => {
+          drawScheduled = false;
+          drawCanvas(0);
+        });
+      }
+
+      // ============ MAIN DRAW ============
+      function drawCanvas(elapsedTime) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const now = performance.now();
+        if (now - lastDrawTime < 16 && elapsedTime === 0) return;
+        lastDrawTime = now;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // 1. Background
+        drawBackground(w, h);
+
+        // 2. Media clip path (3:4 ratio boundaries)
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(CURVE.P0.x, CURVE.P0.y);
+        ctx.bezierCurveTo(CURVE.P1.x, CURVE.P1.y, CURVE.P2.x, CURVE.P2.y, CURVE.P3.x, CURVE.P3.y);
+        ctx.lineTo(CURVE.P3.x, h - 140);
+        ctx.lineTo(CURVE.P0.x, h - 140);
+        ctx.closePath();
+        ctx.clip();
+
+        if (currentMode === 'image') {
+          if (userImage) {
+            const iw = userImage.naturalWidth || userImage.width;
+            const ih = userImage.naturalHeight || userImage.height;
+            
+            const baseScale = Math.max((w * 0.8) / iw, (h * 0.6) / ih);
+            let drawWidth = iw * baseScale * photoScale;
+            let drawHeight = ih * baseScale * photoScale;
+
+            const x = (w / 2) - (drawWidth / 2) + photoOffsetX;
+            const y = (h / 2) - (drawHeight / 2) + photoOffsetY;
+            ctx.drawImage(userImage, x, y, drawWidth, drawHeight);
+          } else {
+            ctx.fillStyle = '#f5f5f7';
+            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#d90429';
+            ctx.font = `bold 42px "${PRIMARY_FONT}", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Tap below to add your photo', w / 2, h / 2);
+          }
+        } else {
+          if (userVideo && userVideo.readyState >= 2) {
+            const vw = userVideo.videoWidth;
+            const vh = userVideo.videoHeight;
+            if (vw && vh) {
+              const baseScale = Math.max((w * 0.8) / vw, (h * 0.6) / vh);
+              let drawWidth = vw * baseScale * photoScale;
+              let drawHeight = vh * baseScale * photoScale;
+
+              const vx = (w / 2) - (drawWidth / 2) + photoOffsetX;
+              const vy = (h / 2) - (drawHeight / 2) + photoOffsetY;
+              ctx.drawImage(userVideo, vx, vy, drawWidth, drawHeight);
+            }
+          } else {
+            ctx.fillStyle = '#f5f5f7';
+            ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#b3001b';
+            ctx.font = `bold 42px "${PRIMARY_FONT}", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Tap below to add your video clip', w / 2, h / 2);
+          }
+        }
+
+        ctx.restore();
+
+        // 3. Top branding with Soft White Glow on Logo
+        ctx.save();
+        const logoX = 45;
+        const logoY = 24;
+        const logoTargetHeight = 195;
+
+        if (newLogoImg.complete && newLogoImg.naturalHeight !== 0) {
+          const lAspect = newLogoImg.width / newLogoImg.height;
+          const logoWidth = logoTargetHeight * lAspect;
+
+          ctx.save();
+          ctx.shadowColor = '#ffffff';
+          ctx.shadowBlur = 20;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+
+          ctx.drawImage(newLogoImg, logoX, logoY, logoWidth, logoTargetHeight);
+          ctx.drawImage(newLogoImg, logoX, logoY, logoWidth, logoTargetHeight);
+          ctx.restore();
+
+          const textStartX = logoX + logoWidth + 20;
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+
+          ctx.font = `900 36px "${PRIMARY_FONT}", sans-serif`;
+          ctx.fillText('WORLD', textStartX, 68);
+          ctx.fillText('HEART', textStartX, 110);
+          ctx.fillText('DAY 26', textStartX, 152);
+
+          ctx.save();
+          ctx.font = `900 22px "${PRIMARY_FONT}", sans-serif`;
+          const dateStr = "29 SEP";
+          const targetWidth = ctx.measureText("HEART").width;
+          const naturalW = ctx.measureText(dateStr).width;
+          const scaleX = targetWidth / naturalW;
+
+          ctx.translate(textStartX, 180);
+          ctx.scale(scaleX, 1);
+          ctx.fillText(dateStr, 0, 0);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+          ctx.font = `900 36px "${PRIMARY_FONT}", sans-serif`;
+          ctx.fillText('WORLD', 50, 68);
+          ctx.fillText('HEART', 50, 110);
+          ctx.fillText('DAY 26', 50, 152);
+
+          ctx.save();
+          ctx.font = `900 22px "${PRIMARY_FONT}", sans-serif`;
+          const dateStr = "29 SEP";
+          const targetWidth = ctx.measureText("HEART").width;
+          const naturalW = ctx.measureText(dateStr).width;
+          const scaleX = targetWidth / naturalW;
+
+          ctx.translate(50, 180);
+          ctx.scale(scaleX, 1);
+          ctx.fillText(dateStr, 0, 0);
+          ctx.restore();
+        }
+        ctx.restore();
+
+        // 4. Slogan
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `900 48px "${SLOGAN_FONT}", sans-serif`;
+        ctx.textAlign = 'left';
+        wrapText(ctx, whdSlogans[currentSloganIndex], 500, 85, 540, 56);
+        ctx.restore();
+
+        // 5. Hashtags
+        drawSlantedTextAlongCurve('#DontMissABeat', 0.20, {
+          aboveOffset: 34,
+          fontSize: 70,
+          color: '#ffffff'
+        });
+
+        ctx.save();
+        ctx.font = `700 70px "${HASHTAG_FONT}", cursive, sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
+        ctx.fillText('#WorldHeartDay', 840, 300);
+        ctx.restore();
+
+        // 6. ECG
+        drawContinuousNormalEcg(elapsedTime);
+
+        // 7. Mascot with Solid White Outline / Less Transparent Glow Effect
+        if (mascotTrImg.complete && mascotTrImg.naturalHeight !== 0) {
+          const targetHeight = 230;
+          const aspect = mascotTrImg.width / mascotTrImg.height;
+          const targetWidth = targetHeight * aspect;
+          const mascotX = w - targetWidth - 20;
+          const mascotY = h - targetHeight - 10;
+          
+          ctx.save();
+          ctx.shadowColor = '#ffffff';
+          ctx.shadowBlur = 12;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          
+          const offsets = [
+            {dx: -3, dy: 0}, {dx: 3, dy: 0}, {dx: 0, dy: -3}, {dx: 0, dy: 3},
+            {dx: -2, dy: -2}, {dx: 2, dy: 2}, {dx: -2, dy: 2}, {dx: 2, dy: -2}
+          ];
+          
+          offsets.forEach(offset => {
+            ctx.drawImage(mascotTrImg, mascotX + offset.dx, mascotY + offset.dy, targetWidth, targetHeight);
+          });
+
+          ctx.shadowBlur = 0;
+          ctx.drawImage(mascotTrImg, mascotX, mascotY, targetWidth, targetHeight);
+          ctx.restore();
+        }
+      }
+
+      // ============ CONTINUOUS ANIMATION LOOP FOR VIDEO/ECG ============
+      function startAnimationLoop() {
+        if (animationId) cancelAnimationFrame(animationId);
+        function loop(timestamp) {
+          drawCanvas(timestamp);
+          if (currentMode === 'video' && userVideo && !userVideo.paused) {
+            animationId = requestAnimationFrame(loop);
+          }
+        }
+        animationId = requestAnimationFrame(loop);
+      }
+
+      // ============ ECG ============
+      function drawContinuousNormalEcg(elapsedTime) {
+        ctx.save();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = 'rgba(255,255,255,0.9)';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+
+        const ecgY = 1370;
+        const timeShift = performance.now() * 0.4;
+
+        function getEcgOffset(t) {
+          const cycleTime = 750;
+          const localT = t % cycleTime;
+          let val = 0;
+          if (localT > 100 && localT < 220) {
+            val -= 8 * Math.sin(((localT - 100) / 120) * Math.PI);
+          } else if (localT >= 260 && localT < 290) { val += 12; }
+          else if (localT >= 290 && localT < 340) {
+            val -= 130 * Math.sin(((localT - 290) / 50) * Math.PI);
+          } else if (localT >= 340 && localT < 380) {
+            val += 28 * Math.sin(((localT - 340) / 40) * Math.PI);
+          } else if (localT >= 460 && localT < 640) {
+            val -= 18 * Math.sin(((localT - 460) / 180) * Math.PI);
+          }
+          return val;
+        }
+
+        let started = false;
+        for (let x = 0; x <= canvas.width; x += 4) {
+          const t = x * 2.2 + timeShift;
+          const y = ecgY + getEcgOffset(t);
+          if (!started) { ctx.moveTo(x, y); started = true; }
+          else { ctx.lineTo(x, y); }
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let currentY = y;
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          if (context.measureText(testLine).width > maxWidth && n > 0) {
+            context.fillText(line, x, currentY);
+            line = words[n] + ' ';
+            currentY += lineHeight;
+          } else { line = testLine; }
+        }
+        context.fillText(line, x, currentY);
+      }
+
+      muteToggleBtn.addEventListener('click', () => {
+        if (!userVideo) return;
+        userVideo.muted = !userVideo.muted;
+        if (userVideo.muted) {
+          muteToggleBtn.textContent = '🔇 Unmute';
+          muteToggleBtn.classList.add('muted');
+        } else {
+          muteToggleBtn.textContent = '🔊 Mute';
+          muteToggleBtn.classList.remove('muted');
+        }
+      });
+
+      // ============ FULLY OPTIMIZED iOS-COMPATIBLE MEDIA SELECT HANDLER ============
+      function handleMediaSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        photoOffsetX = 0;
+        photoOffsetY = 0;
+        zoomRange.value = 1;
+        photoScale = 1;
+        zoomValue.textContent = '1.0×';
+        lastRecordedVideoBlob = null;
+
+        const isVideo = file.type.startsWith('video/') || 
+                       (file.name && file.name.match(/\.(mp4|mov|m4v|3gp|avi|mkv)$/i));
+
+        if (isVideo) {
+          if (userVideo) {  
+            userVideo.pause();  
+            if (userVideo.src) URL.revokeObjectURL(userVideo.src);  
+            userVideo.src = '';  
+            userVideo = null;
+          }
+          if (animationId) cancelAnimationFrame(animationId);
+          
+          const videoUrl = URL.createObjectURL(file);
+          userVideo = document.createElement('video');
+          userVideo.src = videoUrl;
+          userVideo.loop = true;
+          userVideo.muted = true;
+          userVideo.playsInline = true;
+          userVideo.setAttribute('playsinline', '');
+          userVideo.setAttribute('webkit-playsinline', '');
+          userVideo.crossOrigin = 'anonymous';
+          userVideo.preload = 'auto';
+
+          userVideo.load();
+
+          userVideo.onloadeddata = () => {
+            userVideo.play().then(() => {
+              startAnimationLoop();
+            }).catch((err) => {
+              console.warn('Video auto-play restricted:', err);
+              startAnimationLoop();
+            });
+          };
+
+          userVideo.oncanplaythrough = () => {
+            startAnimationLoop();
+          };
+
+          userVideo.onerror = (err) => {
+            console.error('Video load error:', err);
+            alert('Unable to load the selected video format on iOS Safari. Try recording or choosing a standard MP4/MOV clip.');
+          };
+
+          userImage = null;
+          muteToggleBtn.classList.add('visible');
+          muteToggleBtn.textContent = '🔇 Unmute';
+          muteToggleBtn.classList.add('muted');
+        } else {
+          if (userVideo) {  
+            userVideo.pause();  
+            if (userVideo.src) URL.revokeObjectURL(userVideo.src);  
+            userVideo.src = '';  
+            userVideo.srcObject = null;
+            userVideo = null;  
+          }
+          if (animationId) cancelAnimationFrame(animationId);
+          muteToggleBtn.classList.remove('visible');
+          videoStatus.classList.remove('visible');
+
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            userImage = new Image();
+            userImage.onload = () => {
+              scheduleDraw();
+            };
+            userImage.onerror = () => {
+              alert('Unable to load the selected image. Please try a different file.');
+            };
+            userImage.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        
+        setTimeout(() => {
+          cameraInput.value = '';
+          galleryInput.value = '';
+        }, 500);
+      }
+
+      function updateInputAttributes() {
+        if (currentMode === 'image') {
+          cameraInput.setAttribute('accept', 'image/*');
+          cameraInput.setAttribute('capture', 'environment');
+          galleryInput.setAttribute('accept', 'image/*');
+          galleryInput.removeAttribute('capture');
+        } else {
+          cameraInput.setAttribute('accept', 'video/*');
+          cameraInput.setAttribute('capture', 'camcorder');
+          galleryInput.setAttribute('accept', 'video/*');
+          galleryInput.removeAttribute('capture');
+        }
+      }
+
+      updateInputAttributes();
+
+      cameraInput.addEventListener('change', handleMediaSelect);
+      galleryInput.addEventListener('change', handleMediaSelect);
+      
+      cameraBtn.addEventListener('click', () => {
+        if (currentMode === 'image') {
+          cameraInput.setAttribute('capture', 'environment');
+        } else {
+          cameraInput.setAttribute('capture', 'camcorder');
+        }
+        cameraInput.click();
+      });
+      
+      galleryBtn.addEventListener('click', () => {
+        galleryInput.removeAttribute('capture');
+        galleryInput.click();
+      });
+
+      // ============ TOUCH / MOUSE DRAG & PINCH ZOOM ============
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - photoOffsetX;
+          startY = e.touches[0].clientY - photoOffsetY;
+          initialPinchDist = null;
+        } else if (e.touches.length === 2) {
+          isDragging = false;
+          initialPinchDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialScale = photoScale;
+        }
+        e.preventDefault();
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches.length === 1) {
+          photoOffsetX = e.touches[0].clientX - startX;
+          photoOffsetY = e.touches[0].clientY - startY;
+          scheduleDraw();
+        } else if (e.touches.length === 2 && initialPinchDist !== null) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          let newScale = initialScale * (currentDist / initialPinchDist);
+          newScale = Math.max(0.5, Math.min(3.0, newScale));
+          photoScale = newScale;
+          zoomRange.value = photoScale;
+          zoomValue.textContent = photoScale.toFixed(1) + '×';
+          scheduleDraw();
+        }
+        e.preventDefault();
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) initialPinchDist = null;
+        if (e.touches.length === 0) isDragging = false;
+        e.preventDefault();
+      }, { passive: false });
+
+      canvas.addEventListener('touchcancel', () => { isDragging = false; initialPinchDist = null; });
+
+      canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - photoOffsetX;
+        startY = e.clientY - photoOffsetY;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        photoOffsetX = e.clientX - startX;
+        photoOffsetY = e.clientY - startY;
+        scheduleDraw();
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      zoomRange.addEventListener('input', (e) => {
+        photoScale = parseFloat(e.target.value);
+        zoomValue.textContent = photoScale.toFixed(1) + '×';
+        scheduleDraw();
+      });
+
+      // ============ MODE SWITCHING ============
+      window.switchMode = function(mode) {
+        currentMode = mode;
+        if (animationId) cancelAnimationFrame(animationId);
+
+        modeImageBtn.classList.toggle('active', mode === 'image');
+        modeVideoBtn.classList.toggle('active', mode === 'video');
+
+        videoStatus.classList.remove('visible');
+        statusSpinner.classList.remove('active');
+
+        if (mode === 'image') {
+          cameraBtnText.textContent = 'Take Photo';
+          galleryBtnText.textContent = 'Choose Photo';
+          mediaTypeBadge.textContent = 'Photo';
+          muteToggleBtn.classList.remove('visible');
+          if (userVideo) { userVideo.pause(); }
+        } else {
+          cameraBtnText.textContent = 'Record Video';
+          galleryBtnText.textContent = 'Choose Video';
+          mediaTypeBadge.textContent = 'Video';
+          userImage = null;
+          if (userVideo) {
+            muteToggleBtn.classList.add('visible');
+            userVideo.play().catch(() => {});
+            startAnimationLoop();
+          } else {
+            scheduleDraw();
+          }
+        }
+        
+        updateInputAttributes();
+        
+        cameraInput.value = '';
+        galleryInput.value = '';
+        
+        scheduleDraw();
+      };
+
+      // ============ AUTOMATED BACKGROUND PROCESSING & SHARE ============
+      actionShareBtn.addEventListener('click', async () => {
+        const shareText = `World Heart Day 2026 · ${whdSlogans[currentSloganIndex]} #DontMissABeat #WorldHeartDay`;
+
+        if (currentMode === 'image') {
+          const dataUrl = canvas.toDataURL('image/png');
+          const blob = await (await fetch(dataUrl)).blob();
+          const file = new File([blob], 'eposter-story-3-4.png', { type: 'image/png' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: 'ePoster Story',
+                text: shareText,
+                files: [file]
+              });
+            } catch (err) {
+              if (err.name !== 'AbortError') console.warn('Share failed', err);
+            }
+          } else {
+            const link = document.createElement('a');
+            link.download = 'eposter-story-3-4.png';
+            link.href = dataUrl;
+            link.click();
+            alert('Direct sharing is not supported on this browser. Your story image has been downloaded instead.');
+          }
+        } else {
+          if (!window.MediaRecorder) {
+            alert('Video recording is not supported on this browser.');
+            return;
+          }
+
+          if (lastRecordedVideoBlob) {
+            executeVideoShare(lastRecordedVideoBlob, shareText);
+            return;
+          }
+
+          videoStatus.classList.add('visible');
+          statusSpinner.classList.add('active');
+          statusText.textContent = 'Processing 10s video... Please wait.';
+          actionShareBtn.disabled = true;
+
+          recordingStartTime = performance.now();
+          const canvasStream = canvas.captureStream(30);
+
+          try {
+            let combinedStream;
+            let audioCtx = null;
+
+            if (userVideo && !userVideo.muted) {
+              try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaElementSource(userVideo);
+                const dest = audioCtx.createMediaStreamDestination();
+                source.connect(dest);
+                source.connect(audioCtx.destination);
+                combinedStream = new MediaStream([
+                  ...canvasStream.getVideoTracks(),
+                  ...dest.stream.getAudioTracks()
+                ]);
+              } catch (e) {
+                combinedStream = new MediaStream([...canvasStream.getVideoTracks()]);
+              }
+            } else {
+              combinedStream = new MediaStream([...canvasStream.getVideoTracks()]);
+            }
+
+            let mime = 'video/mp4';
+            if (MediaRecorder.isTypeSupported('video/mp4')) {
+              mime = 'video/mp4';
+            } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+              mime = 'video/webm;codecs=vp8,opus';
+            } else if (MediaRecorder.isTypeSupported('video/webm')) {
+              mime = 'video/webm';
+            }
+
+            const recorder = new MediaRecorder(combinedStream, { mimeType: mime });
+            const chunks = [];
+
+            recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            recorder.onstop = async () => {
+              if (audioCtx) audioCtx.close().catch(() => {});
+              const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+              lastRecordedVideoBlob = new Blob(chunks, { type: mime });
+              
+              statusSpinner.classList.remove('active');
+              statusText.textContent = 'Ready! Opening share dialog...';
+              actionShareBtn.disabled = false;
+
+              executeVideoShare(lastRecordedVideoBlob, shareText, ext);
+            };
+
+            recorder.start();
+
+            function recordLoop(timestamp) {
+              const elapsed = timestamp - recordingStartTime;
+              drawCanvas(elapsed);
+              if (elapsed < 10000 && recorder.state === 'recording') {
+                requestAnimationFrame(recordLoop);
+              }
+            }
+            requestAnimationFrame(recordLoop);
+
+            setTimeout(() => {
+              if (recorder.state === 'recording') recorder.stop();
+            }, 10000);
+
+          } catch (err) {
+            console.error(err);
+            alert('Video processing error: ' + err.message);
+            statusSpinner.classList.remove('active');
+            videoStatus.classList.remove('visible');
+            actionShareBtn.disabled = false;
+          }
+        }
+      });
+
+      async function executeVideoShare(blob, shareText, ext = 'mp4') {
+        const videoFile = new File([blob], `eposter-story-3-4.${ext}`, { type: blob.type || 'video/mp4' });
+
+        if (navigator.canShare && navigator.canShare({ files: [videoFile] })) {
+          try {
+            await navigator.share({
+              title: 'ePoster Story Video',
+              text: shareText,
+              files: [videoFile]
+            });
+            statusText.textContent = 'Shared successfully!';
+            setTimeout(() => videoStatus.classList.remove('visible'), 3000);
+          } catch (err) {
+            if (err.name !== 'AbortError') console.warn('Share failed', err);
+            videoStatus.classList.remove('visible');
+          }
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `eposter-story-3-4.${ext}`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          statusText.textContent = 'Direct sharing not supported; video saved to device!';
+          setTimeout(() => videoStatus.classList.remove('visible'), 4000);
+        }
+      }
+
+      document.getElementById('canvasFrame').addEventListener('touchmove', (e) => {
+        if (e.target === canvas) e.preventDefault();
+      }, { passive: false });
+
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) e.preventDefault();
+        lastTouchEnd = now;
+      }, { passive: false });
+
+      document.fonts.load('700 54px "CustomHandwritten"').then(() => {
+        scheduleDraw();
+      }).catch(() => {
+        scheduleDraw();
+      });
+      
+      window.addEventListener('load', () => { 
+        scheduleDraw(); 
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (userVideo) userVideo.pause();
+          if (animationId) cancelAnimationFrame(animationId);
+        } else {
+          if (userVideo && currentMode === 'video') {
+            userVideo.play().catch(() => {});
+            startAnimationLoop();
+          } else {
+            scheduleDraw();
+          }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

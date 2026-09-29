@@ -59,12 +59,18 @@ export function initCanvasEngine(canvasEl, config) {
       // 1. Backdrop
       drawBackdrop(w, h);
 
-      // 2. Media Canvas Area (with smooth linear edge fade inflow)
-      const frameX = 610, frameY = 55, frameW = 535, frameH = 515;
+      // 2. Dynamic Media Canvas Area (Driven via Config)
+      const frameX = state.config.mediaX ?? 610;
+      const frameY = state.config.mediaY ?? 55;
+      const frameW = state.config.mediaW ?? 535;
+      const frameH = state.config.mediaH ?? 515;
+      const frameRadius = state.config.mediaRadius ?? 18;
+      const fadeDepth = state.config.fadeDepth ?? 55;
+      const rgbColor = state.config.fadeColor || "107, 0, 0";
 
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(frameX, frameY, frameW, frameH, 18);
+      ctx.roundRect(frameX, frameY, frameW, frameH, frameRadius);
       ctx.clip();
 
       if (state.currentMode === 'image') {
@@ -107,23 +113,24 @@ export function initCanvasEngine(canvasEl, config) {
         }
       }
 
-      // Smooth Edge Fade Inflows
-      const fadeDepth = 55;
-      const topGrad = ctx.createLinearGradient(0, frameY, 0, frameY + fadeDepth);
-      topGrad.addColorStop(0, 'rgba(107, 0, 0, 0.95)'); topGrad.addColorStop(1, 'rgba(107, 0, 0, 0)');
-      ctx.fillStyle = topGrad; ctx.fillRect(frameX, frameY, frameW, fadeDepth);
+      // Dynamic Edge Fade Inflows with Custom Transparency Color
+      if (fadeDepth > 0) {
+        const topGrad = ctx.createLinearGradient(0, frameY, 0, frameY + fadeDepth);
+        topGrad.addColorStop(0, `rgba(${rgbColor}, 0.95)`); topGrad.addColorStop(1, `rgba(${rgbColor}, 0)`);
+        ctx.fillStyle = topGrad; ctx.fillRect(frameX, frameY, frameW, fadeDepth);
 
-      const botGrad = ctx.createLinearGradient(0, frameY + frameH - fadeDepth, 0, frameY + frameH);
-      botGrad.addColorStop(0, 'rgba(85, 0, 0, 0)'); botGrad.addColorStop(1, 'rgba(85, 0, 0, 0.95)');
-      ctx.fillStyle = botGrad; ctx.fillRect(frameX, frameY + frameH - fadeDepth, frameW, fadeDepth);
+        const botGrad = ctx.createLinearGradient(0, frameY + frameH - fadeDepth, 0, frameY + frameH);
+        botGrad.addColorStop(0, `rgba(${rgbColor}, 0)`); botGrad.addColorStop(1, `rgba(${rgbColor}, 0.95)`);
+        ctx.fillStyle = botGrad; ctx.fillRect(frameX, frameY + frameH - fadeDepth, frameW, fadeDepth);
 
-      const leftGrad = ctx.createLinearGradient(frameX, 0, frameX + fadeDepth, 0);
-      leftGrad.addColorStop(0, 'rgba(107, 0, 0, 0.95)'); leftGrad.addColorStop(1, 'rgba(107, 0, 0, 0)');
-      ctx.fillStyle = leftGrad; ctx.fillRect(frameX, frameY, fadeDepth, frameH);
+        const leftGrad = ctx.createLinearGradient(frameX, 0, frameX + fadeDepth, 0);
+        leftGrad.addColorStop(0, `rgba(${rgbColor}, 0.95)`); leftGrad.addColorStop(1, `rgba(${rgbColor}, 0)`);
+        ctx.fillStyle = leftGrad; ctx.fillRect(frameX, frameY, fadeDepth, frameH);
 
-      const rightGrad = ctx.createLinearGradient(frameX + frameW - fadeDepth, 0, frameX + frameW, 0);
-      rightGrad.addColorStop(0, 'rgba(107, 0, 0, 0)'); rightGrad.addColorStop(1, 'rgba(74, 0, 0, 0.95)');
-      ctx.fillStyle = rightGrad; ctx.fillRect(frameX + frameW - fadeDepth, frameY, fadeDepth, frameH);
+        const rightGrad = ctx.createLinearGradient(frameX + frameW - fadeDepth, 0, frameX + frameW, 0);
+        rightGrad.addColorStop(0, `rgba(${rgbColor}, 0)`); rightGrad.addColorStop(1, `rgba(${rgbColor}, 0.95)`);
+        ctx.fillStyle = rightGrad; ctx.fillRect(frameX + frameW - fadeDepth, frameY, fadeDepth, frameH);
+      }
 
       ctx.restore();
 

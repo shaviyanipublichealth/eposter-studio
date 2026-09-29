@@ -22,6 +22,7 @@
   <div class="dev-modal" id="devModal">
     <div class="dev-content">
       <h3>⚙️ Secure Developer Panel</h3>
+      
       <div class="dev-group">
         <label>Campaign Title Line 1</label>
         <input type="text" id="devTitle1" value="WORLD AIDS">
@@ -45,10 +46,37 @@ KNOW YOUR STATUS. GET TESTED.
 END STIGMA, SUPPORT LIVES.
 COMMUNITY LEADERSHIP MATTERS.</textarea>
       </div>
+
+      <!-- NEW MEDIA CANVAS CONFIGURATION FIELDS -->
+      <div class="dev-group">
+        <label>Media Canvas Placement & Size (X, Y, Width, Height)</label>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+          <input type="number" id="devMediaX" placeholder="X">
+          <input type="number" id="devMediaY" placeholder="Y">
+          <input type="number" id="devMediaW" placeholder="Width">
+          <input type="number" id="devMediaH" placeholder="Height">
+        </div>
+      </div>
+      <div class="dev-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+        <div>
+          <label>Corner Radius</label>
+          <input type="number" id="devMediaRadius" placeholder="Radius">
+        </div>
+        <div>
+          <label>Fade Depth</label>
+          <input type="number" id="devFadeDepth" placeholder="Depth">
+        </div>
+        <div>
+          <label>Fade Color (RGB)</label>
+          <input type="text" id="devFadeColor" placeholder="R, G, B">
+        </div>
+      </div>
+
       <div class="dev-group">
         <label>Upload Custom Backdrop Image</label>
         <input type="file" id="devBackdropInput" accept="image/*">
       </div>
+
       <div class="dev-btn-row">
         <button class="dev-save-btn" id="devSaveBtn">Save & Apply</button>
         <button class="dev-lock-btn" id="devLockBtn">Lock Session</button>

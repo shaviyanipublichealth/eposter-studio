@@ -7,7 +7,6 @@ import { initMediaHandler } from './media-handler.js';
 
   const config = loadConfig();
 
-  // Secure Dev Modal UI binding
   const isDevAuthenticated = sessionStorage.getItem('is_authenticated_dev') === 'true';
   const devModal = document.getElementById('devModal');
   if (isDevAuthenticated) devModal.classList.add('active');
@@ -18,11 +17,21 @@ import { initMediaHandler } from './media-handler.js';
     alert('Developer session locked successfully.');
   });
 
+  // Populate basic settings
   document.getElementById('devTitle1').value = config.title1;
   document.getElementById('devTitle2').value = config.title2;
   document.getElementById('devDateText').value = config.dateText;
   document.getElementById('devHashtags').value = config.hashtags.join(', ');
   document.getElementById('devSlogans').value = config.slogans.join('\n');
+
+  // Populate Media Canvas settings
+  document.getElementById('devMediaX').value = config.mediaX;
+  document.getElementById('devMediaY').value = config.mediaY;
+  document.getElementById('devMediaW').value = config.mediaW;
+  document.getElementById('devMediaH').value = config.mediaH;
+  document.getElementById('devMediaRadius').value = config.mediaRadius;
+  document.getElementById('devFadeDepth').value = config.fadeDepth;
+  document.getElementById('devFadeColor').value = config.fadeColor;
 
   const canvas = document.getElementById('creatorCanvas');
   const canvasEngine = initCanvasEngine(canvas, config);
@@ -45,6 +54,15 @@ import { initMediaHandler } from './media-handler.js';
     config.hashtags = document.getElementById('devHashtags').value.split(',').map(s => s.trim());
     config.slogans = document.getElementById('devSlogans').value.split('\n').map(s => s.trim()).filter(Boolean);
 
+    // Save Media Canvas layout parameters
+    config.mediaX = parseInt(document.getElementById('devMediaX').value) || 610;
+    config.mediaY = parseInt(document.getElementById('devMediaY').value) || 55;
+    config.mediaW = parseInt(document.getElementById('devMediaW').value) || 535;
+    config.mediaH = parseInt(document.getElementById('devMediaH').value) || 515;
+    config.mediaRadius = parseInt(document.getElementById('devMediaRadius').value) || 18;
+    config.fadeDepth = parseInt(document.getElementById('devFadeDepth').value) || 55;
+    config.fadeColor = document.getElementById('devFadeColor').value || "107, 0, 0";
+
     const backdropFileInput = document.getElementById('devBackdropInput');
     if (backdropFileInput.files && backdropFileInput.files[0]) {
       const reader = new FileReader();
@@ -63,7 +81,6 @@ import { initMediaHandler } from './media-handler.js';
     }
   });
 
-  // UI Elements
   let drawScheduled = false;
   function scheduleDraw() {
     if (drawScheduled) return;
@@ -87,7 +104,6 @@ import { initMediaHandler } from './media-handler.js';
     scheduleDraw
   });
 
-  // Shuffle button
   document.getElementById('shuffleSloganBtn').addEventListener('click', () => {
     let newIndex;
     do { newIndex = Math.floor(Math.random() * config.slogans.length); }
@@ -96,7 +112,6 @@ import { initMediaHandler } from './media-handler.js';
     scheduleDraw();
   });
 
-  // Media Inputs
   const cameraInput = document.getElementById('cameraInput');
   const galleryInput = document.getElementById('galleryInput');
   const zoomRange = document.getElementById('zoomRange');
@@ -143,7 +158,6 @@ import { initMediaHandler } from './media-handler.js';
     }
   }
 
-  // Mode Switching
   document.getElementById('modeImageBtn').addEventListener('click', () => switchMode('image'));
   document.getElementById('modeVideoBtn').addEventListener('click', () => switchMode('video'));
 
@@ -156,7 +170,6 @@ import { initMediaHandler } from './media-handler.js';
     scheduleDraw();
   }
 
-  // Share button
   document.getElementById('actionShareBtn').addEventListener('click', async () => {
     if (state.currentMode === 'image') {
       const dataUrl = canvas.toDataURL('image/png');

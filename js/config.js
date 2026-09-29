@@ -28,7 +28,7 @@ export function loadConfig() {
     mediaH: 515,
     mediaRadius: 18,
     fadeDepth: 55,
-    fadeColor: "107, 0, 0" // RGB format for flexible transparency styling
+    fadeColor: "107, 0, 0"
   };
 }
 

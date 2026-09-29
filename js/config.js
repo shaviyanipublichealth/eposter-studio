@@ -18,13 +18,17 @@ export function loadConfig() {
       "RETHINK. REBUILD. RISE.",
       "KNOW YOUR STATUS. GET TESTED.",
       "END STIGMA, SUPPORT LIVES.",
-      "COMMUNITY LEADERSHIP MATTERS.",
-      "EQUALIZE ACCESS TO HEALTHCARE.",
-      "STAND IN SOLIDARITY FOR HEALTH.",
-      "PROTECT HUMAN RIGHTS, END AIDS.",
-      "EARLY TESTING SAVES LIVES."
+      "COMMUNITY LEADERSHIP MATTERS."
     ],
-    customBackdropDataUrl: null
+    customBackdropDataUrl: null,
+    // Media Canvas Customization Properties
+    mediaX: 610,
+    mediaY: 55,
+    mediaW: 535,
+    mediaH: 515,
+    mediaRadius: 18,
+    fadeDepth: 55,
+    fadeColor: "107, 0, 0" // RGB format for flexible transparency styling
   };
 }
 
